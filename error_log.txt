@@ -1,0 +1,4 @@
+Error: Unable to create a FirestoreClient: Class "Google\Cloud\Firestore\FirestoreClient" not found
+#0 D:\laragon\www\group2515C\vendor\kreait\firebase-php\src\Firebase\Factory.php(521): Kreait\Firebase\Firestore::fromConfig()
+#1 D:\laragon\www\group2515C\test_firestore.php(28): Kreait\Firebase\Factory->createFirestore()
+#2 {main}

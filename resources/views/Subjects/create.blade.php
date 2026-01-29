@@ -1,0 +1,161 @@
+@extends('layouts.template')
+
+@section('content')
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .form-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+    }
+
+    .form-header h2 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .form-body {
+        padding: 30px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 10px;
+        display: block;
+        font-size: 14px;
+    }
+
+    .form-control {
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 12px 16px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        outline: none;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        border-radius: 8px;
+        color: #721c24;
+        margin-bottom: 20px;
+        padding: 15px;
+    }
+
+    .alert-danger ul {
+        margin: 10px 0 0 20px;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 30px;
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        flex: 1;
+        transition: all 0.3s ease;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-back {
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-back:hover {
+        background-color: #5a6268;
+        color: white;
+        text-decoration: none;
+        transform: translateY(-2px);
+    }
+</style>
+
+<div class="form-container">
+    <div class="form-header">
+        <h2><i class="fas fa-plus mr-2"></i>Add New Subject</h2>
+    </div>
+
+    <div class="form-body">
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <strong><i class="fas fa-exclamation-circle mr-2"></i>Please fix the errors:</strong>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form action="{{ route('subjects.store') }}" method="POST">
+            @csrf
+
+            <div class="form-group">
+                <label for="subject_name" class="form-label">Subject Name</label>
+                <input type="text" id="subject_name" name="subject_name" class="form-control" placeholder="Enter subject name" value="{{ old('subject_name') }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="subject_code" class="form-label">Subject Code</label>
+                <input type="text" id="subject_code" name="subject_code" class="form-control" placeholder="Enter subject code" value="{{ old('subject_code') }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="lecturer_name" class="form-label">Lecturer Name</label>
+                <input type="text" id="lecturer_name" name="lecturer_name" class="form-control" placeholder="Enter lecturer name" value="{{ old('lecturer_name') }}" required>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-save mr-2"></i>Submit
+                </button>
+                <a href="{{ route('subjects.index') }}" class="btn-back">
+                    <i class="fas fa-arrow-left mr-2"></i>Back
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+@endsection
