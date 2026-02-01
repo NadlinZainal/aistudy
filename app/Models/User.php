@@ -59,31 +59,25 @@ class User extends Authenticatable
         return $this->hasMany(Message::class, 'receiver_id');
     }
 
-    public function friends()
+    public function getFriendsList()
     {
         $userId = $this->id;
         
-        // Get all friendship IDs using a multi-step approach
-        $friendships = \Illuminate\Support\Facades\DB::table('friendships')
-            ->where('status', 'accepted')
-            ->where(function($q) use ($userId) {
-                $q->where('requester_id', $userId)
-                  ->orWhere('addressee_id', $userId);
-            })
-            ->get();
+        // NUCLEAR OPTION: Raw SQL with bindings to prevent ANY parsing errors
+        // We use explicit bindings for IDs, but hardcode 'accepted' to be absolutely safe
+        $results = \Illuminate\Support\Facades\DB::select(
+            "SELECT * FROM friendships WHERE status = 'accepted' AND (requester_id = ? OR addressee_id = ?)", 
+            [$userId, $userId]
+        );
             
-        $ids = $friendships->flatMap(function($f) use ($userId) {
-                return [$f->requester_id, $f->addressee_id];
-            })
-            ->filter(function($id) use ($userId) {
-                return $id != $userId;
-            })
-            ->unique()
-            ->values()
-            ->toArray();
+        $ids = [];
+        foreach($results as $row) {
+            $ids[] = ($row->requester_id == $userId) ? $row->addressee_id : $row->requester_id;
+        }
+        $ids = array_unique($ids);
 
-        // Return a query builder for the users
-        return User::whereIn('id', $ids);
+        // Return a Collection directly
+        return User::whereIn('id', $ids)->get();
     }
     
     // Pending requests sent by this user

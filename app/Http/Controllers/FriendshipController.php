@@ -12,7 +12,7 @@ class FriendshipController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $friends = $user->friends()->get();
+        $friends = $user->getFriendsList();
         $pendingReceived = $user->receivedFriendRequests()->with('requester')->get();
         $pendingSent = $user->sentFriendRequests()->with('addressee')->get();
 
