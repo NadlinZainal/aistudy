@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('flashcard_id')->constrained('flashcard')->onDelete('cascade'); // Assuming table name is 'flashcard' based on previous model
             $table->integer('total_cards')->default(0);
             $table->integer('studied_cards')->default(0);
+            $table->integer('seconds_spent')->default(0);
             $table->boolean('is_completed')->default(false);
             $table->timestamps();
         });
