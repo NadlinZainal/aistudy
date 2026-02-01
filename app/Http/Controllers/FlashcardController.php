@@ -29,7 +29,11 @@ class FlashcardController extends Controller
             $q->where('user_id', auth()->id());
         }])->get();
 
-        $users = auth()->user()->friends()->get();
+        // Get friends list safely
+        $users = auth()->user()->friends(); 
+        if ($users instanceof \Illuminate\Database\Eloquent\Builder) {
+            $users = $users->get();
+        }
 
         return view('Flashcard.index', compact('flashcards', 'users'));
     }
