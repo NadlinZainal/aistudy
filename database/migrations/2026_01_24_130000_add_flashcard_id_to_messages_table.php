@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('messages', function (Blueprint $table) {
-            $table->unsignedInteger('flashcard_id')->nullable()->after('content');
-            $table->foreign('flashcard_id')->references('id')->on('flashcard')->onDelete('set null');
+            $table->foreignId('flashcard_id')->nullable()->after('content')->constrained('flashcard')->onDelete('set null');
         });
     }
 
