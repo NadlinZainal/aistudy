@@ -109,6 +109,11 @@ Route::post('/logout', function () {
 })->name('logout');
 
 
+// Health Check Route
+Route::get('/health-check', function () {
+    return "Web server is RUNNING! ✅";
+});
+
 // Temporary Migration Route for Setup
 Route::get('/migrate-me', function () {
     try {
@@ -117,4 +122,15 @@ Route::get('/migrate-me', function () {
     } catch (\Exception $e) {
         return "Migration failed: " . $e->getMessage();
     }
+});
+
+// Debug Route (Remove this later!)
+Route::get('/check-config', function() {
+    return [
+        'DB_HOST' => config('database.connections.mysql.host'),
+        'DB_DATABASE' => config('database.connections.mysql.database'),
+        'DB_USERNAME' => config('database.connections.mysql.username'),
+        'APP_ENV' => config('app.env'),
+        'PHP_VERSION' => PHP_VERSION,
+    ];
 });
