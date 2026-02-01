@@ -315,8 +315,8 @@
   </style>
 
   <!-- AdminLTE Core -->
-  <link rel="stylesheet" href="{{ asset('admin/plugins/fontawesome-free/css/all.min.css') }}">
-  <link rel="stylesheet" href="{{ asset('admin/dist/css/adminlte.min.css') }}">
+  <link rel="stylesheet" href="{{ secure_asset('Admin/plugins/fontawesome-free/css/all.min.css') }}">
+  <link rel="stylesheet" href="{{ secure_asset('Admin/dist/css/adminlte.min.css') }}">
   
   <!-- Select2 -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
@@ -471,9 +471,9 @@
 </div>
 
 <!-- JS -->
-<script src="{{ asset('admin/plugins/jquery/jquery.min.js') }}"></script>
-<script src="{{ asset('admin/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ asset('admin/dist/js/adminlte.js') }}"></script>
+<script src="{{ secure_asset('Admin/plugins/jquery/jquery.min.js') }}"></script>
+<script src="{{ secure_asset('Admin/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ secure_asset('Admin/dist/js/adminlte.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Select2 -->
