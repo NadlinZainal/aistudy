@@ -108,3 +108,13 @@ Route::post('/logout', function () {
     return redirect('/');
 })->name('logout');
 
+
+// Temporary Migration Route for Setup
+Route::get('/migrate-me', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate --force');
+        return "Migration successful! <a href='/'>Go to Dashboard</a>";
+    } catch (\Exception $e) {
+        return "Migration failed: " . $e->getMessage();
+    }
+});
