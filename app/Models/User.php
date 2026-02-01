@@ -62,20 +62,22 @@ class User extends Authenticatable
     public function friends()
     {
         $userId = $this->id;
-        return User::where(function($query) use ($userId) {
-            $query->whereIn('id', function($q) use ($userId) {
-                $q->select('addressee_id')
-                  ->from('friendships')
-                  ->where('requester_id', $userId)
-                  ->where('status', 'accepted');
+        
+        // Get IDs of people who are friends with this user
+        $friendIds = \Illuminate\Support\Facades\DB::table('friendships')
+            ->where('status', 'accepted')
+            ->where(function($query) use ($userId) {
+                $query->where('requester_id', $userId)
+                      ->orWhere('addressee_id', $userId);
             })
-            ->orWhereIn('id', function($q) use ($userId) {
-                $q->select('requester_id')
-                  ->from('friendships')
-                  ->where('addressee_id', $userId)
-                  ->where('status', 'accepted');
+            ->get()
+            ->map(function ($friendship) use ($userId) {
+                return $friendship->requester_id == $userId 
+                    ? $friendship->addressee_id 
+                    : $friendship->requester_id;
             });
-        });
+
+        return User::whereIn('id', $friendIds);
     }
     
     // Pending requests sent by this user
