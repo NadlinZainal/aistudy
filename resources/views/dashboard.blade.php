@@ -5,7 +5,7 @@
     .form-container {
         max-width: 600px;
         margin: 0 auto;
-        background: white;
+        background: var(--card-bg);
         border-radius: 12px;
         box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
         overflow: hidden;
@@ -34,7 +34,7 @@
 
     .form-label {
         font-weight: 600;
-        color: #333;
+        color: var(--text-main);
         margin-bottom: 10px;
         display: block;
         font-size: 14px;

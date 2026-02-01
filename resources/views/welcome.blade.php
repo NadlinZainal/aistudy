@@ -260,16 +260,15 @@
                     <i class="fas fa-brain"></i> AIStudy
                 </a>
                 <div class="nav-links">
-                    @if (Route::has('login'))
-                        @auth
-                            <a href="{{ url('/home') }}">Dashboard</a>
-                        @else
-                            <a href="{{ route('login') }}">Log in</a>
-                            @if (Route::has('register'))
-                                <a href="{{ route('register') }}" class="btn btn-primary">Get Started</a>
-                            @endif
-                        @endauth
-                    @endif
+                    @auth
+                        <a href="{{ route('login') }}">Log in</a>
+                        <a href="{{ url('/home') }}" class="btn btn-primary">Get Started</a>
+                    @else
+                        <a href="{{ route('login') }}">Log in</a>
+                        @if (Route::has('register'))
+                            <a href="{{ route('register') }}" class="btn btn-primary">Get Started</a>
+                        @endif
+                    @endauth
                 </div>
             </div>
         </nav>
@@ -279,10 +278,11 @@
             <p>Master any subject faster than ever. Generate smart flashcards, take interactive quizzes, and track your progress with your personal AI tutor.</p>
             <div class="hero-btns">
                 @auth
-                    <a href="{{ url('/home') }}" class="btn btn-primary">Go to Dashboard</a>
+                    <a href="{{ url('/home') }}" class="btn btn-primary">Get Started</a>
+                    <a href="{{ url('/home') }}" class="btn btn-outline">Log In</a>
                 @else
-                    <a href="{{ route('register') }}" class="btn btn-primary">Start for Free</a>
-                    <a href="{{ route('login') }}" class="btn btn-outline">Sign In</a>
+                    <a href="{{ route('register') }}" class="btn btn-primary">Get Started</a>
+                    <a href="{{ route('login') }}" class="btn btn-outline">Log In</a>
                 @endauth
             </div>
         </section>

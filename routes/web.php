@@ -83,6 +83,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/quiz-result', [App\Http\Controllers\FlashcardController::class, 'saveQuizResult'])->name('flashcard.quiz-result');
     Route::post('/telegram/link', [App\Http\Controllers\TelegramController::class, 'generateLinkToken'])->name('telegram.link');
     Route::delete('/flashcard/{flashcard}', [App\Http\Controllers\FlashcardController::class, 'destroy'])->name('flashcard.destroy');
+    Route::patch('/flashcard/{flashcard}/card/{index}', [App\Http\Controllers\FlashcardController::class, 'updateCard'])->name('flashcard.card.update');
+    Route::delete('/flashcard/{flashcard}/card/{index}', [App\Http\Controllers\FlashcardController::class, 'destroyCard'])->name('flashcard.card.destroy');
+    Route::post('/flashcard/{flashcard}/clone', [App\Http\Controllers\FlashcardController::class, 'clone'])->name('flashcard.clone');
 
     // Friendships
     Route::get('/friends', [App\Http\Controllers\FriendshipController::class, 'index'])->name('friends.index');
@@ -102,6 +105,6 @@ Route::post('/telegram/webhook', [App\Http\Controllers\TelegramController::class
 
 Route::post('/logout', function () {
     Auth::logout();
-    return redirect('/login');
+    return redirect('/');
 })->name('logout');
 

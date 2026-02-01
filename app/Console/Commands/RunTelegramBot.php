@@ -51,9 +51,11 @@ class RunTelegramBot extends Command
 
     protected function setupBot(Nutgram $bot)
     {
-        // This is a copy of the logic in TelegramController.
-        // In a real app, this should be in a Service.
-        
+        $bot->middleware(function (Nutgram $bot, $next) {
+            Log::info("Telegram Update Received: " . json_encode($bot->update()));
+            $next($bot);
+        });
+
         $bot->onCommand('start {token}', function (Nutgram $bot, $token) {
             $user = \App\Models\User::where('telegram_link_token', $token)->first();
 

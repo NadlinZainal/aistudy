@@ -33,6 +33,11 @@
                 </div>
             </div>
 
+            <!-- Edit Button -->
+            <button class="btn btn-soft-info btn-soft rounded-pill px-3 mr-3" onclick="openEditModal()">
+                <i class="fas fa-edit mr-1"></i> Edit Card
+            </button>
+
             <!-- Exit Button -->
             <a href="{{ route('flashcard.index') }}" class="btn btn-light shadow-sm text-secondary rounded-pill px-4">
                 <i class="fas fa-times mr-2"></i> Exit
@@ -134,6 +139,36 @@
                     </button>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Card Modal -->
+<div class="modal fade" id="editCardModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content card-modern border-0" style="border-radius: 24px;">
+            <div class="modal-header border-0 p-4">
+                <h5 class="modal-title font-weight-bold">Edit Current Card</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="editCardForm">
+                <div class="modal-body p-4 pt-0">
+                    <div class="form-group mb-4">
+                        <label class="font-weight-bold text-muted small text-uppercase mb-2">Question</label>
+                        <textarea class="form-control rounded-xl p-3 bg-light border-0" id="edit-card-question" rows="3" required style="border-radius: 12px;"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-bold text-muted small text-uppercase mb-2">Answer</label>
+                        <textarea class="form-control rounded-xl p-3 bg-light border-0" id="edit-card-answer" rows="3" required style="border-radius: 12px;"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4">
+                    <button type="button" class="btn btn-light px-4 rounded-pill" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary px-4 rounded-pill shadow-lg">Save Changes</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -393,6 +428,63 @@
             console.error(err);
         });
     }
+
+    // Modal Functions
+    function openEditModal() {
+        const card = cards[currentIndex];
+        document.getElementById('edit-card-question').value = card.question;
+        document.getElementById('edit-card-answer').value = card.answer;
+        $('#editCardModal').modal('show');
+    }
+
+    document.getElementById('editCardForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const question = document.getElementById('edit-card-question').value;
+        const answer = document.getElementById('edit-card-answer').value;
+        const btn = this.querySelector('button[type="submit"]');
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Saving...';
+
+        fetch(`/flashcard/${ {{ $flashcard->id }} }/card/${currentIndex}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                question: question,
+                answer: answer
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                cards[currentIndex].question = question;
+                cards[currentIndex].answer = answer;
+                updateCardDisplay();
+                $('#editCardModal').modal('hide');
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Card Updated',
+                    text: 'Changes saved successfully!',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    toast: true,
+                    position: 'top-end'
+                });
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            Swal.fire('Error', 'Failed to save changes.', 'error');
+        })
+        .finally(() => {
+            btn.disabled = false;
+            btn.innerHTML = 'Save Changes';
+        });
+    });
 </script>
 
 <style>

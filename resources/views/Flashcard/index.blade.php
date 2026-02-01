@@ -177,6 +177,72 @@ $(document).ready(function() {
         // Link will naturally navigate, but we show the state in case of slow response
     });
 
+    // Delete Entire Deck
+    $(document).on('click', '.btn-delete-deck', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const btn = $(this);
+        const id = btn.data('id');
+        const title = btn.data('title');
+        const cardItem = btn.closest('.flashcard-item');
+
+        Swal.fire({
+            title: `Delete '${title}'?`,
+            text: "This deck and all its flashcards will be permanently removed!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, delete deck!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/flashcard/${id}`,
+                    method: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Smooth removal animation
+                            cardItem.css('transition', 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)');
+                            cardItem.css('transform', 'scale(0.8) translateY(20px)');
+                            cardItem.css('opacity', '0');
+                            
+                            setTimeout(function() {
+                                cardItem.remove();
+                                
+                                // Check if the library is now empty
+                                if ($('#flashcardGrid').children(':visible').length === 0) {
+                                    location.reload(); // Show empty state
+                                }
+                            }, 400);
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Deleted!',
+                                text: response.message,
+                                timer: 2000,
+                                showConfirmButton: false,
+                                position: 'top-end',
+                                toast: true
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: xhr.responseJSON?.message || 'Failed to delete the deck. Please try again.'
+                        });
+                    }
+                });
+            }
+        });
+    });
+
     // Live Search Logic
     $('#liveSearch').on('keyup', function() {
         const query = $(this).val().toLowerCase();

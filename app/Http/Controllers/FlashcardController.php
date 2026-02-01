@@ -109,7 +109,7 @@ class FlashcardController extends Controller
                 $flashcard->status = $cards ? 'completed' : 'failed';
                 $flashcard->save();
                 
-                return redirect()->route('flashcard.index')->with('success', 'Combined flashcard deck created successfully.');
+                return redirect()->route('flashcard.show', $flashcard->id)->with('success', 'Flashcard created successfully.');
             } catch (\Throwable $e) {
                 $flashcard->status = 'failed';
                 $flashcard->save();
@@ -146,7 +146,7 @@ class FlashcardController extends Controller
             $flashcard->cards = $cards;
             $flashcard->status = $cards ? 'completed' : 'failed';
             $flashcard->save();
-            return redirect()->route('flashcard.index')->with('success', 'Flashcard created from URL successfully.');
+            return redirect()->route('flashcard.show', $flashcard->id)->with('success', 'Flashcard created successfully.');
         } catch (\Throwable $e) {
             $flashcard->status = 'failed';
             $flashcard->save();
@@ -168,13 +168,26 @@ class FlashcardController extends Controller
         return view('Flashcard.edit', compact('flashcard'));
     }
 
-    // Update a flashcard set (title/description only)
+    // Update a flashcard set (title/description/document)
     public function update(Request $request, $id)
     {
         $flashcard = Flashcard::findOrFail($id);
-        $flashcard->update($request->only(['title', 'description']));
         
-        return redirect()->route('flashcard.index')->with('success', 'Deck updated successfully.');
+        $data = $request->only(['title', 'description']);
+        
+        if ($request->hasFile('document')) {
+            // Delete old document if it exists
+            if ($flashcard->document_path && \Storage::disk('public')->exists($flashcard->document_path)) {
+                \Storage::disk('public')->delete($flashcard->document_path);
+            }
+            
+            $path = $request->file('document')->store('flashcards', 'public');
+            $data['document_path'] = $path;
+        }
+        
+        $flashcard->update($data);
+        
+        return redirect()->route('flashcard.show', $flashcard->id)->with('success', 'Deck updated successfully.');
     }
 
     // Delete a flashcard set
@@ -184,9 +197,14 @@ class FlashcardController extends Controller
 
         // Optionally delete the document file
         if ($flashcard->document_path) {
-            Storage::delete($flashcard->document_path);
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($flashcard->document_path);
         }
         $flashcard->delete();
+
+        if (request()->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Flashcard deck deleted successfully.']);
+        }
+
         return redirect()->route('flashcard.index')->with('success', 'Flashcard deleted successfully.');
     }
 
@@ -410,5 +428,76 @@ class FlashcardController extends Controller
             ->get();
             
         return view('Flashcard.history', compact('results'));
+    }
+
+    /**
+     * Update an individual card in a deck.
+     */
+    public function updateCard(Request $request, $id, $index)
+    {
+        $flashcard = Flashcard::where('user_id', auth()->id())->findOrFail($id);
+        
+        $request->validate([
+            'question' => 'required|string',
+            'answer' => 'required|string',
+        ]);
+
+        $cards = $flashcard->cards;
+        if (!isset($cards[$index])) {
+            return response()->json(['error' => 'Card not found'], 404);
+        }
+
+        $cards[$index]['question'] = $request->question;
+        $cards[$index]['answer'] = $request->answer;
+        
+        $flashcard->cards = $cards;
+        $flashcard->save();
+
+        return response()->json(['success' => true]);
+    }
+
+    /**
+     * Delete an individual card from a deck.
+     */
+    public function destroyCard($id, $index)
+    {
+        $flashcard = Flashcard::where('user_id', auth()->id())->findOrFail($id);
+        
+        $cards = $flashcard->cards;
+        if (!isset($cards[$index])) {
+            return response()->json(['error' => 'Card not found'], 404);
+        }
+
+        array_splice($cards, $index, 1);
+        
+        $flashcard->cards = $cards;
+        $flashcard->save();
+
+        return response()->json(['success' => true]);
+    }
+
+    /**
+     * Clone a flashcard deck for the current user.
+     */
+    public function clone($id)
+    {
+        $original = Flashcard::findOrFail($id);
+        
+        // Don't clone if the user already owns it (or maybe allow it? Let's allow it but check)
+        
+        $clone = $original->replicate();
+        $clone->user_id = auth()->id();
+        $clone->is_favorite = false;
+        $clone->save();
+        
+        if (request()->ajax()) {
+            return response()->json([
+                'success' => true, 
+                'message' => 'Flashcard deck added to your library!',
+                'redirect' => route('flashcard.index')
+            ]);
+        }
+        
+        return redirect()->route('flashcard.index')->with('success', 'Flashcard deck added to your library!');
     }
 }

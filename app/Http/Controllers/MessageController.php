@@ -11,7 +11,20 @@ class MessageController extends Controller
 {
     public function index()
     {
-        $users = Auth::user()->friends()->get();
+        $user = Auth::user();
+        
+        // Fetch friends and include the friendship ID for the current user
+        $users = $user->friends()->get()->map(function($friend) use ($user) {
+            $friendship = \App\Models\Friendship::where(function($q) use ($user, $friend) {
+                $q->where('requester_id', $user->id)->where('addressee_id', $friend->id);
+            })->orWhere(function($q) use ($user, $friend) {
+                $q->where('requester_id', $friend->id)->where('addressee_id', $user->id);
+            })->first();
+            
+            $friend->friendship_id = $friendship ? $friendship->id : null;
+            return $friend;
+        });
+
         return view('messages.index', compact('users'));
     }
 

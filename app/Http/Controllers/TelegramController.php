@@ -29,6 +29,7 @@ class TelegramController extends Controller
 
     public function handle(Request $request)
     {
+        Log::debug('Telegram Webhook Payload:', $request->all());
         $token = env('TELEGRAM_BOT_TOKEN');
         if (!$token) {
             Log::error("Telegram Bot Token is missing in .env");

@@ -22,7 +22,7 @@
                 <div class="row">
                     @forelse($users as $user)
                         <div class="col-md-6 mb-3">
-                            <div class="d-flex align-items-center p-3 bg-white border rounded-lg shadow-sm">
+                            <div class="d-flex align-items-center p-3 glass border rounded-lg shadow-sm">
                                 <div class="mr-3">
                                      @if($user->profile_photo_path)
                                         <img src="{{ asset('storage/' . $user->profile_photo_path) }}" class="rounded-circle" width="50" height="50" style="object-fit: cover;">

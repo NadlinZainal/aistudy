@@ -130,7 +130,7 @@
                             $percent = $progress ? ($progress->studied_cards / max($progress->total_cards, 1)) * 100 : 0;
                         @endphp
                         <div class="col-md-4 mb-3">
-                            <div class="p-3 bg-white rounded-xl shadow-sm border h-100 hover-up transition-all cursor-pointer" onclick="window.location.href='{{ route('flashcard.study', $deck->id) }}'">
+                            <div class="p-3 glass rounded-xl shadow-sm border h-100 hover-up transition-all cursor-pointer" onclick="window.location.href='{{ route('flashcard.study', $deck->id) }}'">
                                 <div class="d-flex align-items-center mb-3">
                                     <div class="rounded-circle bg-primary-soft p-2 mr-3" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
                                         <i class="fas fa-book-reader text-primary small"></i>

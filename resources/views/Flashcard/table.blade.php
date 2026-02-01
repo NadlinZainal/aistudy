@@ -69,7 +69,7 @@
                     <div class="card h-100 card-modern glass p-3 {{ (($flashcard->cards && count($flashcard->cards) > 0) || $flashcard->status === 'completed') ? 'cursor-pointer' : '' }}" 
                          style="border-top: 6px solid {{ $style['start'] }}; border-radius: 24px;"
                          @if(($flashcard->cards && count($flashcard->cards) > 0) || $flashcard->status === 'completed')
-                            onclick="if(!event.target.closest('button, a, .dropdown-menu, i')) window.location.href='{{ route('flashcard.study', $flashcard->id) }}'"
+                            onclick="if(!event.target.closest('button, a, .dropdown-menu, i')) window.location.href='{{ route('flashcard.show', $flashcard->id) }}'"
                          @endif
                          >
                         <div class="card-body d-flex flex-column p-4">
@@ -138,13 +138,9 @@
                                                     <i class="fas fa-file-pdf text-danger mr-3"></i> PDF Export
                                                 </a>
                                                 <div class="dropdown-divider mx-2"></div>
-                                                <form action="{{ route('flashcard.destroy', $flashcard->id) }}" method="POST" class="px-1">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-link dropdown-item text-danger rounded-lg py-2" onclick="return confirm('Archive this deck?')">
-                                                        <i class="fas fa-trash-alt mr-3"></i> Delete
-                                                    </button>
-                                                </form>
+                                                <button class="dropdown-item text-danger rounded-lg py-2 btn-delete-deck" data-id="{{ $flashcard->id }}" data-title="{{ $flashcard->title }}">
+                                                    <i class="fas fa-trash-alt mr-3"></i> Delete
+                                                </button>
                                             </div>
                                         </div>
                                     </div>

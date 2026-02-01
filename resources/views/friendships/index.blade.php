@@ -16,7 +16,7 @@
     <!-- Incoming Requests -->
     @if($pendingReceived->count() > 0)
         <div class="card border-0 shadow-sm mb-4">
-            <div class="card-header bg-white border-bottom">
+            <div class="card-header bg-transparent border-bottom">
                 <h5 class="mb-0 text-primary"><i class="fas fa-inbox mr-2"></i> Friend Requests</h5>
             </div>
             <div class="list-group list-group-flush">

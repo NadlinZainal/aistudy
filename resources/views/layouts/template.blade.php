@@ -108,142 +108,185 @@
       
       /* Sidebar Modernization */
       .main-sidebar {
-          background-color: var(--sidebar-bg) !important;
+          background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%) !important;
           backdrop-filter: blur(16px);
           -webkit-backdrop-filter: blur(16px);
-          border-right: 1px solid var(--border-color) !important;
-          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-      body.dark-mode .main-sidebar {
-          background-color: rgba(15, 23, 42, 0.8) !important;
           border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
-      }
-      .brand-link {
-          border-bottom: 1px solid var(--border-color) !important;
-          padding: 1.5rem 1.5rem !important;
-          transition: all 0.3s;
-      }
-      .brand-link .brand-text {
-          font-weight: 700 !important;
-          letter-spacing: -0.02em;
-          font-size: 1.25rem;
-      }
-      /* Sidebar Expanded & Hover-Expanded Styles */
-      body:not(.sidebar-collapse) .main-sidebar,
-      .main-sidebar:hover {
-          width: 250px !important;
-      }
-      body:not(.sidebar-collapse) .nav-sidebar .nav-item,
-      .main-sidebar:hover .nav-sidebar .nav-item {
-          margin-bottom: 4px;
-          padding: 0 12px;
-      }
-      body:not(.sidebar-collapse) .nav-sidebar .nav-link,
-      .main-sidebar:hover .nav-sidebar .nav-link {
-          border-radius: 14px !important;
-          padding: 12px 16px !important;
-          display: flex;
-          align-items: center;
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 10px 0 30px rgba(0, 0, 0, 0.2) !important;
       }
       
-      /* Base Sidebar Items */
+      .brand-link {
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+          padding: 1.5rem 1.25rem !important;
+          transition: all 0.3s;
+          background: rgba(255, 255, 255, 0.02);
+      }
+      
+      .brand-link:hover {
+          background: rgba(255, 255, 255, 0.05);
+      }
+
+      .brand-link .brand-text {
+          font-weight: 800 !important;
+          letter-spacing: -0.03em;
+          font-size: 1.3rem;
+          background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+      }
+
+      /* Sidebar Expanded Styles */
+      body:not(.sidebar-collapse) .nav-sidebar .nav-item,
+      .main-sidebar:hover .nav-sidebar .nav-item {
+          margin-bottom: 6px;
+          padding: 0 14px;
+      }
+      
       .nav-sidebar .nav-link {
+          border-radius: 12px !important;
+          padding: 12px 16px !important;
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
           font-weight: 500 !important;
           color: #94a3b8 !important;
+          position: relative;
+          overflow: hidden;
       }
+
       .nav-sidebar .nav-link i {
-          transition: transform 0.3s ease;
+          transition: all 0.3s ease;
           font-size: 1.1rem;
+          width: 28px;
+          text-align: center;
       }
-      body:not(.sidebar-collapse) .nav-sidebar .nav-link i,
-      .main-sidebar:hover .nav-sidebar .nav-link i,
-      .brand-link i {
-          margin-right: 12px !important;
-      }
-      .nav-sidebar .nav-link i {
-          transition: transform 0.3s ease;
-          margin-right: 12px !important;
-          font-size: 1.1rem;
-      }
+
       .nav-sidebar .nav-link:hover {
           background: rgba(255, 255, 255, 0.05) !important;
           color: #fff !important;
+          transform: translateX(4px);
       }
-      body:not(.sidebar-collapse) .nav-sidebar .nav-link:hover,
-      .main-sidebar:hover .nav-sidebar .nav-link:hover {
-          padding-left: 20px !important;
-      }
+
       .nav-sidebar .nav-link:hover i {
           transform: scale(1.1);
+          color: var(--primary-color);
       }
+
       .nav-sidebar .nav-link.active {
           background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
           color: #fff !important;
-          box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+          box-shadow: 0 8px 15px -3px rgba(79, 70, 229, 0.4);
           border: none !important;
       }
-      
-      /* Brand & User Panel Proportions */
-      .brand-link {
-          border-bottom: 1px solid rgba(255,255,255,0.05) !important;
-          padding: 1.25rem 1rem !important;
-          transition: all 0.3s;
-          display: flex;
-          align-items: center;
-          height: 65px;
+
+      .nav-sidebar .nav-link.active::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 25%;
+          height: 50%;
+          width: 4px;
+          background: #fff;
+          border-radius: 0 4px 4px 0;
+          box-shadow: 0 0 10px #fff;
       }
+
+      .nav-header {
+          padding: 1.5rem 1.5rem 0.5rem !important;
+          font-size: 0.65rem !important;
+          font-weight: 800 !important;
+          text-transform: uppercase !important;
+          letter-spacing: 0.1em !important;
+          color: #475569 !important;
+      }
+      
+      /* Collapsed Sidebar Adjustments */
       body.sidebar-collapse .main-sidebar:not(:hover) .brand-link {
-          padding: 0 !important;
-          justify-content: center;
-          width: 100% !important;
-      }
-      body.sidebar-collapse .main-sidebar:not(:hover) .brand-link i {
-          margin-right: 0 !important;
+          padding-left: 0 !important;
+          padding-right: 0 !important;
           margin-left: 0 !important;
-          padding: 0 !important;
+          margin-right: 0 !important;
+          width: 100% !important;
+          display: flex !important;
+          justify-content: center !important;
+          align-items: center !important;
+          height: 65px;
+          overflow: hidden;
       }
-      body.sidebar-collapse .main-sidebar:not(:hover) .brand-text {
+
+      body.sidebar-collapse .main-sidebar:not(:hover) .brand-icon {
           display: none !important;
-          width: 0 !important;
       }
-      .brand-link .brand-text {
-          font-weight: 700 !important;
-          letter-spacing: -0.01em;
-          font-size: 1.2rem;
-          color: #f8fafc !important;
-          transition: opacity 0.3s ease;
+
+      body.sidebar-collapse .main-sidebar:not(:hover) .brand-text-mini {
+          display: block !important;
+          width: 100% !important;
+          text-align: center !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          line-height: 65px !important; /* Match brand-link height */
+          font-weight: 800 !important;
+          font-size: 1.1rem;
+          color: #6366f1 !important;
+          letter-spacing: 0.05em;
+      }
+
+      body.sidebar-collapse .main-sidebar:not(:hover) .nav-header {
+          display: none !important;
+      }
+
+      .brand-text-mini {
+          display: none;
       }
       
+      /* Floating User Panel */
       .user-panel {
-          border-bottom: 1px solid rgba(255,255,255,0.05) !important;
-          padding: 1rem 0.5rem !important;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          margin: 0.75rem 10px !important;
+          background: rgba(255, 255, 255, 0.03) !important;
+          border: 1px solid rgba(255, 255, 255, 0.05) !important;
+          margin: 1.25rem 14px !important;
+          border-radius: 16px !important;
+          padding: 0.85rem !important;
+          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
           display: flex;
           align-items: center;
-          border-radius: 12px;
       }
-      body:not(.sidebar-collapse) .user-panel,
-      .main-sidebar:hover .user-panel {
-          padding: 1rem 12px !important;
-      }
-      body.sidebar-collapse .main-sidebar:not(:hover) .user-panel {
-          justify-content: center;
-          margin: 0.75rem 4px !important;
-      }
+      
       .user-panel:hover {
-          background: rgba(255, 255, 255, 0.03);
+          background: rgba(255, 255, 255, 0.08) !important;
+          transform: translateY(-2px);
+          border-color: rgba(255, 255, 255, 0.1) !important;
       }
+
+      .user-panel .image img {
+          border: 2px solid rgba(255, 255, 255, 0.2) !important;
+          transition: transform 0.3s ease;
+      }
+
+      .user-panel:hover .image img {
+          transform: scale(1.1);
+      }
+
       .user-panel .info a {
           font-weight: 600 !important;
-          color: #f8fafc !important; /* Always white-ish against dark sidebar */
-          font-size: 0.95rem;
-          transition: opacity 0.3s;
+          color: #e2e8f0 !important;
+          font-size: 0.9rem;
+          transition: all 0.3s;
       }
+
       .user-panel .info a:hover {
-          opacity: 0.8;
           color: #fff !important;
+          text-decoration: none;
+      }
+
+      /* Transitions and Fixes */
+      body.sidebar-collapse .main-sidebar:not(:hover) .user-panel {
+          margin: 1rem 8px !important;
+          padding: 0.5rem !important;
+          justify-content: center;
+      }
+      
+      body.sidebar-collapse .main-sidebar:not(:hover) .user-panel .info {
+          display: none !important;
       }
       
       /* Dark Mode Specific Sidebar */
@@ -314,7 +357,7 @@
       <li class="nav-item">
         <form method="POST" action="{{ route('logout') }}">
           @csrf
-          <button type="submit" class="nav-link btn btn-link" style="color:#333;">
+          <button type="submit" class="nav-link btn btn-link" style="color: var(--text-main);">
             <i class="fas fa-sign-out-alt"></i> Logout
           </button>
         </form>
@@ -329,7 +372,8 @@
 
     <!-- Brand -->
     <a href="{{ url('/') }}" class="brand-link">
-      <i class="fas fa-brain" style="color: #6366f1;"></i>
+      <i class="fas fa-brain brand-icon" style="color: #6366f1;"></i>
+      <span class="brand-text-mini">AIS</span>
       <span class="brand-text">AIStudy</span>
     </a>
     
@@ -356,12 +400,14 @@
       @endauth
       
       <!-- Sidebar Menu -->
-      <nav class="mt-2 text-sm">
+      <nav class="mt-2 pb-5">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          
+          <li class="nav-header">Main Menu</li>
           <li class="nav-item">
             <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-th-large"></i>
-              <p>Dashboard</p>
+              <i class="nav-icon fas fa-chart-line"></i>
+              <p>Analytics</p>
             </a>
           </li>
           <li class="nav-item">
@@ -370,48 +416,40 @@
               <p>My Decks</p>
             </a>
           </li>
+
+          <li class="nav-header">Learning Center</li>
           <li class="nav-item">
             <a href="{{ route('flashcard.index') }}" class="nav-link">
-              <i class="nav-icon fas fa-tasks"></i>
-              <p>Quizzes</p>
+              <i class="nav-icon fas fa-graduation-cap"></i>
+              <p>Practice Quiz</p>
             </a>
           </li>
           <li class="nav-item">
             <a href="{{ route('flashcard.quiz-history') }}" class="nav-link {{ request()->routeIs('flashcard.quiz-history') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-history text-success"></i>
-              <p>Quiz History</p>
+              <i class="nav-icon fas fa-history"></i>
+              <p>Performance</p>
             </a>
           </li>
           <li class="nav-item">
             <a href="{{ route('flashcard.favorites') }}" class="nav-link {{ request()->routeIs('flashcard.favorites') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-heart text-danger"></i>
-              <p>Favourites</p>
+              <i class="nav-icon fas fa-star"></i>
+              <p>Starred Decks</p>
             </a>
           </li>
+
+          <li class="nav-header">Networking</li>
           <li class="nav-item">
             <a href="{{ route('messages.index') }}" class="nav-link {{ request()->routeIs('messages.*') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-comments text-primary"></i>
-              <p>Direct Messages</p>
+              <i class="nav-icon fas fa-paper-plane"></i>
+              <p>Messages</p>
             </a>
           </li>
           <li class="nav-item">
             <a href="{{ route('friends.index') }}" class="nav-link {{ request()->routeIs('friends.*') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-user-friends text-info"></i>
+              <i class="nav-icon fas fa-user-friends"></i>
               <p>Friends</p>
             </a>
           </li>
-
-
-
-
-
-
-
-
-
-
-
-
         </ul>
       </nav>
 
@@ -424,23 +462,7 @@
   <div class="content-wrapper">
     <div class="content p-4">
       <!-- Session Alerts -->
-      @if(session('success'))
-          <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-4" role="alert" style="border-radius: 12px;">
-              <i class="fas fa-check-circle mr-2"></i> {{ session('success') }}
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-              </button>
-          </div>
-      @endif
-
-      @if(session('error'))
-          <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-4" role="alert" style="border-radius: 12px;">
-              <i class="fas fa-exclamation-triangle mr-2"></i> {{ session('error') }}
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-              </button>
-          </div>
-      @endif
+      {{-- Flash Notifications handled via SweetAlert2 below in scripts --}}
 
       @yield('content')
     </div>
@@ -452,6 +474,7 @@
 <script src="{{ asset('admin/plugins/jquery/jquery.min.js') }}"></script>
 <script src="{{ asset('admin/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('admin/dist/js/adminlte.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Select2 -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -498,6 +521,34 @@
     // Run on load and toggle
     updateNavbar();
     themeToggle.addEventListener('click', updateNavbar);
+
+    // SweetAlert2 Toast Configuration
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+
+    // Flash Message Handling
+    @if(session('success'))
+        Toast.fire({
+            icon: 'success',
+            title: "{{ session('success') }}"
+        });
+    @endif
+
+    @if(session('error'))
+        Toast.fire({
+            icon: 'error',
+            title: "{{ session('error') }}"
+        });
+    @endif
 </script>
 
 </body>
