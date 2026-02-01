@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('flashcard', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('user_id')->nullable()->index();
+            $table->id();
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('title')->nullable();
             $table->text('description')->nullable();
             $table->string('document_path')->nullable();

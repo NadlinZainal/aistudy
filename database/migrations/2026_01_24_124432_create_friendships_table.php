@@ -13,13 +13,10 @@ return new class extends Migration
     {
         Schema::create('friendships', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('requester_id');
-            $table->unsignedInteger('addressee_id');
+            $table->foreignId('requester_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('addressee_id')->constrained('users')->onDelete('cascade');
             $table->enum('status', ['pending', 'accepted', 'declined', 'blocked'])->default('pending');
             $table->timestamps();
-
-            $table->foreign('requester_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('addressee_id')->references('id')->on('users')->onDelete('cascade');
             
             // Prevent duplicate requests
             $table->unique(['requester_id', 'addressee_id']);

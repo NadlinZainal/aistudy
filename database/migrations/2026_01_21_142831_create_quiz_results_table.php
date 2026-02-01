@@ -13,15 +13,12 @@ return new class extends Migration
     {
         Schema::create('quiz_results', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('user_id');
-            $table->unsignedInteger('flashcard_id');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('flashcard_id')->constrained('flashcard')->onDelete('cascade');
             $table->integer('score');
             $table->integer('correct_count');
             $table->integer('total_questions');
             $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('flashcard_id')->references('id')->on('flashcard')->onDelete('cascade');
         });
     }
 
