@@ -158,3 +158,16 @@ Route::get('/mega-reset', function () {
         return "<h3>Reset failed!</h3> Error: " . $e->getMessage() . "<pre>" . $e->getTraceAsString() . "</pre>";
     }
 });
+
+// Brute Force Fix Route
+Route::get('/brute-fix', function () {
+    try {
+        if (!\Illuminate\Support\Facades\Schema::hasColumn('study_progress', 'seconds_spent')) {
+            \Illuminate\Support\Facades\DB::statement('ALTER TABLE study_progress ADD COLUMN seconds_spent INT DEFAULT 0 AFTER studied_cards');
+            return "SUCCESS: Column 'seconds_spent' added via Raw SQL! <a href='/home'>Go to Dashboard</a>";
+        }
+        return "Nothing to fix: Column already exists. <a href='/home'>Go to Dashboard</a>";
+    } catch (\Exception $e) {
+        return "Brute fix failed: " . $e->getMessage();
+    }
+});

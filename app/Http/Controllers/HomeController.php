@@ -30,12 +30,16 @@ class HomeController extends Controller
         
         $totalFlashcards = Flashcard::where('user_id', $userId)->count();
         
-        // Calculate average study time in minutes for decks that have been studied
-        $totalSeconds = StudyProgress::where('user_id', $userId)->sum('seconds_spent') ?? 0;
-        $studiedDecksCount = StudyProgress::where('user_id', $userId)->where('seconds_spent', '>', 0)->count();
-        
-        $avgSeconds = $studiedDecksCount > 0 ? ($totalSeconds / $studiedDecksCount) : 0;
-        $averageStudyTime = round($avgSeconds / 60, 1); // convert to minutes
+        // Calculate average study time (Hardened against missing columns)
+        try {
+            $totalSeconds = StudyProgress::where('user_id', $userId)->sum('seconds_spent') ?? 0;
+            $studiedDecksCount = StudyProgress::where('user_id', $userId)->where('seconds_spent', '>', 0)->count();
+            $avgSeconds = $studiedDecksCount > 0 ? ($totalSeconds / $studiedDecksCount) : 0;
+            $averageStudyTime = round($avgSeconds / 60, 1);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::warning("Database column 'seconds_spent' missing. Site remains functional.");
+            $averageStudyTime = "Schema Fix Required";
+        }
 
         // AI Study Plan: Get 3 decks that need attention (lowest progress or never studied)
         $studyPlan = Flashcard::where('user_id', $userId)
