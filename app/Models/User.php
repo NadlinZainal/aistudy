@@ -64,8 +64,9 @@ class User extends Authenticatable
         $userId = $this->id;
         
         // Get IDs of people who are friends with this user
+        // Using whereRaw to force single quotes around 'accepted' to avoid SQL syntax errors in some environments
         $friendIds = \Illuminate\Support\Facades\DB::table('friendships')
-            ->where('status', 'accepted')
+            ->whereRaw("status = 'accepted'")
             ->where(function($query) use ($userId) {
                 $query->where('requester_id', $userId)
                       ->orWhere('addressee_id', $userId);
@@ -75,7 +76,8 @@ class User extends Authenticatable
                 return $friendship->requester_id == $userId 
                     ? $friendship->addressee_id 
                     : $friendship->requester_id;
-            });
+            })
+            ->toArray();
 
         return User::whereIn('id', $friendIds);
     }
