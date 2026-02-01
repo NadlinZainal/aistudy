@@ -135,12 +135,26 @@ Route::get('/check-config', function() {
     ];
 });
 
-// Mega Reset Route (Wipes everything and starts fresh!)
+// Mega Reset Route (Detailed Diagnostics)
 Route::get('/mega-reset', function () {
     try {
+        $output = "";
+        
+        // 1. Run Migration Fresh
         \Illuminate\Support\Facades\Artisan::call('migrate:fresh --force');
-        return "DATABASE COMPLETELY RESET! ✅ <a href='/'>Go to Home</a>";
+        $output .= "<b>Step 1:</b> Migration Fresh result: <pre>" . \Illuminate\Support\Facades\Artisan::output() . "</pre><br>";
+
+        // 2. Check if column exists
+        $hasColumn = \Illuminate\Support\Facades\Schema::hasColumn('study_progress', 'seconds_spent');
+        $status = $hasColumn ? "✅ EXISTS" : "❌ MISSING";
+        $output .= "<b>Step 2:</b> Column 'seconds_spent' in 'study_progress' table: <b>$status</b><br>";
+
+        // 3. List all tables
+        $tables = \Illuminate\Support\Facades\DB::select('SHOW TABLES');
+        $output .= "<b>Step 3:</b> Database tables found: " . count($tables) . "<br>";
+
+        return "<h3>DATABASE RESET COMPLETE</h3> $output <br><a href='/home'>Go to Dashboard</a>";
     } catch (\Exception $e) {
-        return "Reset failed: " . $e->getMessage();
+        return "<h3>Reset failed!</h3> Error: " . $e->getMessage() . "<pre>" . $e->getTraceAsString() . "</pre>";
     }
 });
