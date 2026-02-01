@@ -115,7 +115,7 @@ class FlashcardController extends Controller
                 $flashcard->status = 'failed';
                 $flashcard->save();
                 \Log::error('Flashcard generation failed: ' . $e->getMessage());
-                return redirect()->route('flashcard.index')->with('error', 'Connected successfully but failed to generate cards.');
+                return redirect()->route('flashcard.index')->with('error', 'Generation failed: ' . $e->getMessage());
             }
         }
 
@@ -151,7 +151,8 @@ class FlashcardController extends Controller
         } catch (\Throwable $e) {
             $flashcard->status = 'failed';
             $flashcard->save();
-            return redirect()->route('flashcard.index')->with('error', 'Failed to generate flashcards from URL.');
+            \Log::error('Flashcard generation failed (URL): ' . $e->getMessage());
+            return redirect()->route('flashcard.index')->with('error', 'URL Generation failed: ' . $e->getMessage());
         }
     }
 
@@ -300,7 +301,7 @@ class FlashcardController extends Controller
                 return response()->json(['error' => 'Could not extract text for summary.'], 422);
             }
 
-            $summary = $generator->generateSummary($text, env('OPENAI_API_KEY'));
+            $summary = $generator->generateSummary($text, config('services.openai.key'));
             $flashcard->summary = $summary;
             $flashcard->save();
 

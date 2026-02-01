@@ -32,9 +32,9 @@ class FlashcardGeneratorService
     public function generateFromText($text, $flashcard)
     {
         try {
-            $apiKey = env('OPENAI_API_KEY');
+            $apiKey = config('services.openai.key');
             if (!$apiKey) {
-                throw new \Exception('OPENAI_API_KEY is not set in environment variables.');
+                throw new \Exception('OPENAI_API_KEY is not set in environment variables (Config Check).');
             }
 
             // Limit text length to prevent token limits
@@ -53,9 +53,9 @@ class FlashcardGeneratorService
     public function generateFromDocument($flashcard)
     {
         try {
-            $apiKey = env('OPENAI_API_KEY');
+            $apiKey = config('services.openai.key');
             if (!$apiKey) {
-                throw new \Exception('OPENAI_API_KEY is not set in environment variables.');
+                throw new \Exception('OPENAI_API_KEY is not set in environment variables (Config Check).');
             }
 
             $filePath = storage_path('app/public/' . $flashcard->document_path);
@@ -210,9 +210,9 @@ class FlashcardGeneratorService
     public function chatWithAi($message, $context = '')
     {
         try {
-            $apiKey = env('OPENAI_API_KEY');
+            $apiKey = config('services.openai.key');
             if (!$apiKey) {
-                throw new \Exception('OPENAI_API_KEY is not set.');
+                throw new \Exception('OPENAI_API_KEY is not set (Config).');
             }
 
             // Bypass SSL certificate verification for local development
@@ -306,9 +306,9 @@ class FlashcardGeneratorService
     public function generateQuiz($flashcard)
     {
         try {
-            $apiKey = env('OPENAI_API_KEY');
+            $apiKey = config('services.openai.key');
             if (!$apiKey) {
-                throw new \Exception('OPENAI_API_KEY is not set.');
+                throw new \Exception('OPENAI_API_KEY is not set (Config).');
             }
 
             $client = OpenAI::factory()
