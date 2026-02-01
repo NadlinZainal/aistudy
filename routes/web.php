@@ -132,6 +132,8 @@ Route::get('/check-config', function() {
         'DB_USERNAME' => config('database.connections.mysql.username'),
         'APP_ENV' => config('app.env'),
         'PHP_VERSION' => PHP_VERSION,
+        'OPENAI_CONFIG' => config('services.openai.key') ? 'SET *****' . substr(config('services.openai.key'), -4) : 'NULL',
+        'OPENAI_ENV' => env('OPENAI_API_KEY') ? 'SET *****' . substr(env('OPENAI_API_KEY'), -4) : 'NULL',
     ];
 });
 
