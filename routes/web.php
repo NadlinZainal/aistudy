@@ -134,3 +134,13 @@ Route::get('/check-config', function() {
         'PHP_VERSION' => PHP_VERSION,
     ];
 });
+
+// Mega Reset Route (Wipes everything and starts fresh!)
+Route::get('/mega-reset', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate:fresh --force');
+        return "DATABASE COMPLETELY RESET! ✅ <a href='/'>Go to Home</a>";
+    } catch (\Exception $e) {
+        return "Reset failed: " . $e->getMessage();
+    }
+});
