@@ -14,7 +14,7 @@ class MessageController extends Controller
         $user = Auth::user();
         
         // Fetch friends and include the friendship ID for the current user
-        $users = $user->friends()->get()->map(function($friend) use ($user) {
+        $users = $user->getFriendsList()->map(function($friend) use ($user) {
             $friendship = \App\Models\Friendship::where(function($q) use ($user, $friend) {
                 $q->where('requester_id', $user->id)->where('addressee_id', $friend->id);
             })->orWhere(function($q) use ($user, $friend) {
