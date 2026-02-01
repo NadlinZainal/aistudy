@@ -153,6 +153,15 @@ Route::get('/mega-reset', function () {
         $tables = \Illuminate\Support\Facades\DB::select('SHOW TABLES');
         $output .= "<b>Step 3:</b> Database tables found: " . count($tables) . "<br>";
 
+        // 4. Check friendships table
+        $hasFriendships = \Illuminate\Support\Facades\Schema::hasTable('friendships');
+        $output .= "<b>Step 4:</b> Table 'friendships' exists: " . ($hasFriendships ? "✅ YES" : "❌ NO") . "<br>";
+        
+        if ($hasFriendships) {
+            $friendshipColumns = \Illuminate\Support\Facades\Schema::getColumnListing('friendships');
+            $output .= "<b>Step 5:</b> 'friendships' columns: " . implode(', ', $friendshipColumns) . "<br>";
+        }
+
         return "<h3>DATABASE RESET COMPLETE</h3> $output <br><a href='/home'>Go to Dashboard</a>";
     } catch (\Exception $e) {
         return "<h3>Reset failed!</h3> Error: " . $e->getMessage() . "<pre>" . $e->getTraceAsString() . "</pre>";

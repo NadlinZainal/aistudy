@@ -63,23 +63,26 @@ class User extends Authenticatable
     {
         $userId = $this->id;
         
-        // Get IDs of people who are friends with this user
-        // Using whereRaw to force single quotes around 'accepted' to avoid SQL syntax errors in some environments
-        $friendIds = \Illuminate\Support\Facades\DB::table('friendships')
-            ->whereRaw("status = 'accepted'")
-            ->where(function($query) use ($userId) {
-                $query->where('requester_id', $userId)
-                      ->orWhere('addressee_id', $userId);
+        // Get all friendship IDs where this user is involved and status is accepted
+        $ids = \Illuminate\Support\Facades\DB::table('friendships')
+            ->where('status', 'accepted')
+            ->where(function($q) use ($userId) {
+                $q->where('requester_id', $userId)
+                  ->orWhere('addressee_id', $userId);
             })
             ->get()
-            ->map(function ($friendship) use ($userId) {
-                return $friendship->requester_id == $userId 
-                    ? $friendship->addressee_id 
-                    : $friendship->requester_id;
+            ->flatMap(function($f) use ($userId) {
+                return [$f->requester_id, $f->addressee_id];
             })
+            ->filter(function($id) use ($userId) {
+                return $id != $userId;
+            })
+            ->unique()
+            ->values()
             ->toArray();
 
-        return User::whereIn('id', $friendIds);
+        // Return a query builder for the users
+        return User::whereIn('id', $ids);
     }
     
     // Pending requests sent by this user
