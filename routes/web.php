@@ -135,10 +135,6 @@ Route::get('/check-config', function() {
     ];
 });
 
-Route::get('/version', function() {
-    return '<h1>Version: DEBUG_FRIENDS_DISABLED_v1</h1>';
-});
-
 // Mega Reset Route (Detailed Diagnostics)
 Route::get('/mega-reset', function () {
     try {

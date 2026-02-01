@@ -1,6 +1,6 @@
 @extends('layouts.template') 
 @section('content') 
-@include('flashcard.table')
+@include('Flashcard.table')
 
 <!-- Share Modal -->
 <div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-hidden="true">

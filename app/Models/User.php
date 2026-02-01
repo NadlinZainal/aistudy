@@ -61,9 +61,29 @@ class User extends Authenticatable
 
     public function friends()
     {
-        // TEMPORARY DEBUG: Return empty result to prove if this file is being used
-        // If the SQL error persists, then THIS FILE IS NOT UPDATED ON SERVER.
-        return User::where('id', -1);
+        $userId = $this->id;
+        
+        // Get all friendship IDs using a multi-step approach
+        $friendships = \Illuminate\Support\Facades\DB::table('friendships')
+            ->where('status', 'accepted')
+            ->where(function($q) use ($userId) {
+                $q->where('requester_id', $userId)
+                  ->orWhere('addressee_id', $userId);
+            })
+            ->get();
+            
+        $ids = $friendships->flatMap(function($f) use ($userId) {
+                return [$f->requester_id, $f->addressee_id];
+            })
+            ->filter(function($id) use ($userId) {
+                return $id != $userId;
+            })
+            ->unique()
+            ->values()
+            ->toArray();
+
+        // Return a query builder for the users
+        return User::whereIn('id', $ids);
     }
     
     // Pending requests sent by this user
