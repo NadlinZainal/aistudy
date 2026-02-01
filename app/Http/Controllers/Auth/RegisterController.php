@@ -57,11 +57,35 @@ class RegisterController extends Controller
     }
 
     /**
-     * Create a new user instance after a valid registration.
+     * Handle a registration request for the application.
      *
-     * @param  array  $data
-     * @return \App\Models\User
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
+    public function register(\Illuminate\Http\Request $request)
+    {
+        try {
+            $this->validator($request->all())->validate();
+
+            $user = $this->create($request->all());
+
+            $this->guard()->login($user);
+
+            if ($response = $this->registered($request, $user)) {
+                return $response;
+            }
+
+            return $request->wantsJson()
+                ? new \Illuminate\Http\JsonResponse([], 201)
+                : redirect($this->redirectPath());
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('REGISTRATION FAILED: ' . $e->getMessage());
+            \Illuminate\Support\Facades\Log::error($e->getTraceAsString());
+            throw $e;
+        }
+    }
+
     protected function create(array $data)
     {
         return User::create([
