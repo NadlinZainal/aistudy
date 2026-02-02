@@ -134,6 +134,7 @@ Route::get('/check-config', function() {
         'PHP_VERSION' => PHP_VERSION,
         'OPENAI_CONFIG' => config('services.openai.key') ? 'SET *****' . substr(config('services.openai.key'), -4) : 'NULL',
         'OPENAI_ENV' => env('OPENAI_API_KEY') ? 'SET *****' . substr(env('OPENAI_API_KEY'), -4) : 'NULL',
+        'TELEGRAM_TOKEN' => env('TELEGRAM_BOT_TOKEN') ? 'SET *****' . substr(env('TELEGRAM_BOT_TOKEN'), -4) : 'NULL',
     ];
 });
 
