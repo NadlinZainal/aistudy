@@ -246,8 +246,9 @@
     document.getElementById('profile_photo').addEventListener('change', function(e) {
         if (this.files && this.files[0]) {
             const reader = new FileReader();
-            const img = document.querySelector('.col-md-4 img');
-            const fallback = document.querySelector('.col-md-4 .glass');
+            // Selector matched to the profile sidebar (col-md-3)
+            const img = document.querySelector('.col-md-3 img');
+            const fallback = document.querySelector('.col-md-3 .glass i'); // Icon inside fallback
             
             reader.onload = function(e) {
                 if (img) {
