@@ -23,16 +23,16 @@ class TelegramController extends Controller
         return response()->json([
             'success' => true,
             'token' => $user->telegram_link_token,
-            'bot_username' => env('TELEGRAM_BOT_USERNAME', 'AIStudyBot') 
+            'bot_username' => config('services.telegram.username') 
         ]);
     }
 
     public function handle(Request $request)
     {
         Log::debug('Telegram Webhook Payload:', $request->all());
-        $token = env('TELEGRAM_BOT_TOKEN');
+        $token = config('services.telegram.token');
         if (!$token) {
-            Log::error("Telegram Bot Token is missing in .env");
+            Log::error("Telegram Bot Token is missing in config");
             return response()->json(['error' => 'Bot token not set'], 500);
         }
 
@@ -171,7 +171,7 @@ class TelegramController extends Controller
 
         try {
             $file = $bot->getFile($fileId);
-            $url = "https://api.telegram.org/file/bot" . env('TELEGRAM_BOT_TOKEN') . "/" . $file->file_path;
+            $url = "https://api.telegram.org/file/bot" . config('services.telegram.token') . "/" . $file->file_path;
             
             $contents = file_get_contents($url);
             $path = 'flashcard_documents/' . Str::random(40) . '_' . $fileName;
