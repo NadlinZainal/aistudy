@@ -210,3 +210,44 @@ Route::get('/telegram-test', function () {
         return "<b>Error:</b> " . $e->getMessage();
     }
 });
+
+// Telegram Simulation Route (Internal Self-Test)
+Route::get('/telegram-simulate', function () {
+    try {
+        $client = new \GuzzleHttp\Client(['verify' => false]);
+        $url = url('/telegram/webhook');
+        
+        $payload = [
+            "update_id" => 123456789,
+            "message" => [
+                "message_id" => 1,
+                "from" => [
+                    "id" => 987654321,
+                    "is_bot" => false,
+                    "first_name" => "DebugUser",
+                    "username" => "debug_user"
+                ],
+                "chat" => [
+                    "id" => 987654321,
+                    "first_name" => "DebugUser",
+                    "username" => "debug_user",
+                    "type" => "private"
+                ],
+                "date" => time(),
+                "text" => "/start"
+            ]
+        ];
+
+        $response = $client->post($url, [
+            'json' => $payload,
+            'http_errors' => false // Don't throw on 4xx/5xx
+        ]);
+
+        return "<b>Webhook Sim Result:</b><br>" .
+               "Status: " . $response->getStatusCode() . "<br>" .
+               "Body: " . $response->getBody();
+
+    } catch (\Exception $e) {
+        return "<b>Simulation Error:</b> " . $e->getMessage();
+    }
+});
