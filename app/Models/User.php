@@ -25,8 +25,6 @@ class User extends Authenticatable
         'address',
         'age',
         'profile_photo_path',
-        'telegram_chat_id',
-        'telegram_link_token',
     ];
 
     /**

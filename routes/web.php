@@ -81,7 +81,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/flashcard/{flashcard}/quiz', [App\Http\Controllers\FlashcardController::class, 'quiz'])->name('flashcard.quiz');
     Route::get('/quiz-history', [App\Http\Controllers\FlashcardController::class, 'quizHistory'])->name('flashcard.quiz-history');
     Route::post('/quiz-result', [App\Http\Controllers\FlashcardController::class, 'saveQuizResult'])->name('flashcard.quiz-result');
-    Route::post('/telegram/link', [App\Http\Controllers\TelegramController::class, 'generateLinkToken'])->name('telegram.link');
+// Telegram Routes Removed
     Route::delete('/flashcard/{flashcard}', [App\Http\Controllers\FlashcardController::class, 'destroy'])->name('flashcard.destroy');
     Route::patch('/flashcard/{flashcard}/card/{index}', [App\Http\Controllers\FlashcardController::class, 'updateCard'])->name('flashcard.card.update');
     Route::delete('/flashcard/{flashcard}/card/{index}', [App\Http\Controllers\FlashcardController::class, 'destroyCard'])->name('flashcard.card.destroy');

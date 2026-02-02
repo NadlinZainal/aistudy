@@ -129,48 +129,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Telegram Integration Section -->
-                                <div class="mb-4">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <div class="bg-info text-white p-2 rounded-lg mr-2 shadow-sm" style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; background-color: #0088cc !important;">
-                                            <i class="fab fa-telegram-plane fa-xs"></i>
-                                        </div>
-                                        <h6 class="font-weight-bold mb-0 text-uppercase tracking-wider">Telegram Integration</h6>
-                                    </div>
-
-                                    <div class="glass p-3 rounded-16 border-0">
-                                        @if(auth()->user()->telegram_chat_id)
-                                            <div class="d-flex align-items-center text-success">
-                                                <i class="fas fa-check-circle mr-2"></i>
-                                                <span class="font-weight-bold">Connected to Telegram</span>
-                                            </div>
-                                            <p class="text-muted small mt-2 mb-0">You're all set! You can now use the AIStudy bot to create decks and practice daily.</p>
-                                        @else
-                                            <div id="telegram-link-container">
-                                                <p class="text-muted small mb-3">Link your Telegram account to create decks instantly via chat and receive daily practice cards.</p>
-                                                
-                                                <div id="token-display" class="mb-3 d-none">
-                                                    <label class="form-label font-weight-bold small text-muted text-uppercase mb-1">Your Linking Token</label>
-                                                    <div class="input-group">
-                                                        <input type="text" id="telegram-token-input" class="form-control-modern py-2 bg-light" readonly>
-                                                        <div class="input-group-append">
-                                                            <button class="btn btn-outline-primary border-2 rounded-right-12" type="button" onclick="copyToken()">
-                                                                <i class="fas fa-copy"></i>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                    <div class="mt-2 small text-primary">
-                                                        <i class="fas fa-info-circle mr-1"></i> Send <code>/start [TOKEN]</code> to <a href="https://t.me/{{ env('TELEGRAM_BOT_USERNAME', 'AIStudyBot') }}" target="_blank" class="font-weight-bold">@ {{ env('TELEGRAM_BOT_USERNAME', 'AIStudyBot') }}</a>
-                                                    </div>
-                                                </div>
-
-                                                <button type="button" id="btn-generate-token" class="btn btn-info btn-soft rounded-pill px-4 py-2 font-weight-bold w-100" onclick="generateToken()">
-                                                    <i class="fas fa-link mr-2"></i> Get Linking Token
-                                                </button>
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
 
                                 <!-- Action Buttons -->
                                 <div class="pt-3 border-top d-flex align-items-center justify-content-between">
@@ -269,46 +227,6 @@
         }
     });
 
-    function generateToken() {
-        const btn = document.getElementById('btn-generate-token');
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Generating...';
-
-        fetch('{{ route("telegram.link") }}', {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                document.getElementById('telegram-token-input').value = data.token;
-                document.getElementById('token-display').classList.remove('d-none');
-                btn.classList.add('d-none');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-link mr-2"></i> Get Linking Token';
-        });
-    }
-
-    function copyToken() {
-        const input = document.getElementById('telegram-token-input');
-        input.select();
-        document.execCommand('copy');
-        
-        const btn = event.currentTarget;
-        const originalIcon = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-check"></i>';
-        setTimeout(() => {
-            btn.innerHTML = originalIcon;
-        }, 2000);
-    }
 </script>
 @endsection
 @endsection
