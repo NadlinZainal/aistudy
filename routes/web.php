@@ -184,3 +184,29 @@ Route::get('/brute-fix', function () {
         return "Brute fix failed: " . $e->getMessage();
     }
 });
+// Telegram Diagnostic Route
+Route::get('/telegram-test', function () {
+    try {
+        $token = config('services.telegram.token');
+        $output = "<b>Token Config:</b> " . ($token ? "SET *****" . substr($token, -4) : "NULL") . "<br>";
+        
+        // 1. Connectivity Check
+        $client = new \GuzzleHttp\Client(['verify' => false]);
+        $response = $client->get("https://api.telegram.org/bot{$token}/getMe");
+        $output .= "<b>API Connection:</b> ✅ Success! " . $response->getBody() . "<br><br>";
+
+        // 2. Log Access (Last 20 lines)
+        $logPath = storage_path('logs/laravel.log');
+        if (file_exists($logPath)) {
+            $lines = file($logPath);
+            $lastLines = array_slice($lines, -20);
+            $output .= "<b>Recent Logs:</b><pre>" . implode("", $lastLines) . "</pre>";
+        } else {
+            $output .= "<b>Logs:</b> No log file found.";
+        }
+        
+        return $output;
+    } catch (\Exception $e) {
+        return "<b>Error:</b> " . $e->getMessage();
+    }
+});
