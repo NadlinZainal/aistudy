@@ -110,6 +110,10 @@ Route::post('/logout', function () {
 })->name('logout');
 
 
+Route::get('/debug-db-paths', function() {
+    return \App\Models\Flashcard::whereNotNull('document_path')->latest()->take(10)->get(['id', 'title', 'document_path'])->toArray();
+});
+
 // Health Check Route
 Route::get('/health-check', function () {
     return "Web server is RUNNING! ✅";
