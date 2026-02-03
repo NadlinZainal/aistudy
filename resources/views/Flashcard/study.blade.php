@@ -19,9 +19,6 @@
                     <a class="dropdown-item py-2" href="{{ route('flashcard.export.pdf', $flashcard->id) }}">
                         <i class="fas fa-file-pdf text-danger mr-2" style="width: 20px;"></i> Save as PDF
                     </a>
-                    <a class="dropdown-item py-2" href="{{ route('flashcard.export', $flashcard->id) }}">
-                        <i class="fas fa-file-code text-success mr-2" style="width: 20px;"></i> Save as JSON
-                    </a>
                     <div class="dropdown-divider"></div>
                     <div class="px-3 py-2">
                         <div class="g-savetodrive"

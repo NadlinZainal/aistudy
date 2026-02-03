@@ -101,7 +101,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/favorites', [App\Http\Controllers\FlashcardController::class, 'favorites'])->name('flashcard.favorites');
     Route::post('/flashcard/{flashcard}/toggle-favorite', [App\Http\Controllers\FlashcardController::class, 'toggleFavorite'])->name('flashcard.toggle-favorite');
     Route::get('/flashcard/{flashcard}/summarize', [App\Http\Controllers\FlashcardController::class, 'summarize'])->name('flashcard.summarize');
-    Route::get('/flashcard/{flashcard}/export', [App\Http\Controllers\FlashcardController::class, 'export'])->name('flashcard.export');
     Route::get('/flashcard/{flashcard}/export/pdf', [App\Http\Controllers\FlashcardController::class, 'exportPdf'])->name('flashcard.export.pdf');
 
     Route::post('/flashcard/chat', [App\Http\Controllers\FlashcardController::class, 'chat'])->name('flashcard.chat');

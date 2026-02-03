@@ -320,25 +320,6 @@ class FlashcardController extends Controller
         }
     }
 
-    // Export Flashcards as JSON
-    public function export($id)
-    {
-        $flashcard = Flashcard::findOrFail($id);
-        
-        $data = [
-            'title' => $flashcard->title,
-            'description' => $flashcard->description,
-            'cards' => $flashcard->cards,
-            'summary' => $flashcard->summary,
-            'exported_at' => now()->toDateTimeString(),
-        ];
-
-        $fileName = \Illuminate\Support\Str::slug($flashcard->title) . '_export.json';
-
-        return response()->streamDownload(function () use ($data) {
-            echo json_encode($data, JSON_PRETTY_PRINT);
-        }, $fileName, ['Content-Type' => 'application/json']);
-    }
     // Export Flashcards as PDF
     public function exportPdf($id)
     {
