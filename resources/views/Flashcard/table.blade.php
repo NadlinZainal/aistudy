@@ -130,6 +130,9 @@
                                                 <a class="dropdown-item rounded-lg py-2 mb-1" href="{{ route('flashcard.edit', $flashcard->id) }}">
                                                     <i class="fas fa-pen text-info mr-3"></i> Edit Deck
                                                 </a>
+                                                <button class="dropdown-item rounded-lg py-2 mb-1 btn-summarize" data-id="{{ $flashcard->id }}">
+                                                    <i class="fas fa-bolt text-warning mr-3"></i> Smart Summary
+                                                </button>
                                                 <button class="dropdown-item rounded-lg py-2 mb-1 btn-share-flashcard" data-title="{{ $flashcard->title }}" data-id="{{ $flashcard->id }}">
                                                     <i class="fas fa-paper-plane text-success mr-3"></i> Send to Friend
                                                 </button>

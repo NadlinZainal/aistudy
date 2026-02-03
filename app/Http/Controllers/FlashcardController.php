@@ -275,40 +275,42 @@ class FlashcardController extends Controller
             return response()->json(['summary' => $flashcard->summary]);
         }
 
+        if (!$flashcard->document_path) {
+            return response()->json(['error' => 'No document associated with this deck to summarize.'], 422);
+        }
+
         try {
             $generator = new FlashcardGeneratorService();
+            $apiKey = config('services.openai.key');
             
-            // Extract text again from the document
-            $filePath = storage_path('app/public/' . $flashcard->document_path);
-            $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
-            
-            // Re-using extraction logic (ideally this should be refactored, but kept simple for now)
-            $text = '';
-            if ($extension === 'pdf') {
-                $parser = new \Smalot\PdfParser\Parser();
-                $pdf = $parser->parseFile($filePath);
-                $text = $pdf->getText();
-            } elseif ($extension === 'txt') {
-                $text = file_get_contents($filePath);
+            if (!$apiKey) {
+                return response()->json(['error' => 'OpenAI API key is not configured.'], 500);
             }
+
+            $filePath = storage_path('app/public/' . $flashcard->document_path);
+            
+            if (!file_exists($filePath)) {
+                return response()->json(['error' => 'Source document file not found.'], 404);
+            }
+
+            $text = $generator->extractTextFromFile($filePath);
 
             if (empty(trim($text))) {
-                // Try OCR fallback
-                $text = $generator->chatWithAi("Can you read this document? (Wait, I need better text)", "No text extracted");
-                // Actually, the generator already has OCR logic in generateFromDocument but it's internal.
-                // Let's just call a specific method if we had one, or re-run the whole thing.
-                // For now, let's assume the standard extraction works or show error.
-                return response()->json(['error' => 'Could not extract text for summary.'], 422);
+                return response()->json(['error' => 'Could not extract text from the document for summarization.'], 422);
             }
 
-            $summary = $generator->generateSummary($text, config('services.openai.key'));
+            // Limit text for summarization
+            $textSlice = substr($text, 0, 20000);
+
+            $summary = $generator->generateSummary($textSlice, $apiKey);
+            
             $flashcard->summary = $summary;
             $flashcard->save();
 
             return response()->json(['summary' => $summary]);
         } catch (\Throwable $e) {
             \Log::error('Summary generation failed: ' . $e->getMessage());
-            return response()->json(['error' => 'Failed to generate summary.'], 500);
+            return response()->json(['error' => 'Failed to generate summary: ' . $e->getMessage()], 500);
         }
     }
 
