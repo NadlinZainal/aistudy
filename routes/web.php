@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/health-check', function () {
-    return "Web server is RUNNING! ✅ Version: " . date('Y-m-d H:i:s');
+    return "Web server is RUNNING! ✅ Version: 1.0.2 (" . date('H:i:s') . ")";
 });
 
 Route::get('/clear-route-cache', function() {
