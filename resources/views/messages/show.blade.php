@@ -311,10 +311,16 @@
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
                 'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
                 'Content-Type': 'application/json'
             }
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => { throw err; });
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 if (window.Swal) {
@@ -336,14 +342,17 @@
                     window.location.href = data.redirect;
                 }
             } else {
-                alert('Something went wrong. Please try again.');
-                btn.innerHTML = originalContent;
-                btn.disabled = false;
+                throw data;
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Failed to add deck.');
+            const msg = error.message || 'Failed to add deck.';
+            if (window.Swal) {
+                Swal.fire('Error', msg, 'error');
+            } else {
+                alert(msg);
+            }
             btn.innerHTML = originalContent;
             btn.disabled = false;
         });

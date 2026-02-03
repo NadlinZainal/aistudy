@@ -491,7 +491,7 @@ class FlashcardController extends Controller
             $clone->is_favorite = false;
             $clone->save();
             
-            if (request()->ajax()) {
+            if (request()->ajax() || request()->expectsJson()) {
                 return response()->json([
                     'success' => true, 
                     'message' => 'Flashcard deck added to your library!',
@@ -502,6 +502,14 @@ class FlashcardController extends Controller
             return redirect()->route('flashcard.index')->with('success', 'Flashcard deck added to your library!');
         } catch (\Throwable $e) {
             \Log::error('Clone failed: ' . $e->getMessage());
+            
+            if (request()->ajax() || request()->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to add deck: ' . $e->getMessage()
+                ], 500);
+            }
+            
             return back()->with('error', 'Failed to add deck: ' . $e->getMessage());
         }
     }
