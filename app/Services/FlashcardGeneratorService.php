@@ -58,7 +58,7 @@ class FlashcardGeneratorService
                 throw new \Exception('OPENAI_API_KEY is not set in environment variables (Config Check).');
             }
 
-            $filePath = storage_path('app/public/' . $flashcard->document_path);
+            $filePath = \Illuminate\Support\Facades\Storage::disk('public')->path($flashcard->document_path);
             
             if (!file_exists($filePath)) {
                 throw new \Exception("File not found at path: {$filePath}");

@@ -287,12 +287,16 @@ class FlashcardController extends Controller
                 return response()->json(['error' => 'OpenAI API key is not configured.'], 500);
             }
 
-            $filePath = storage_path('app/public/' . $flashcard->document_path);
-            
-            if (!file_exists($filePath)) {
-                return response()->json(['error' => 'Source document file not found.'], 404);
+            if (!\Storage::disk('public')->exists($flashcard->document_path)) {
+                \Log::error("Summary failed: File does not exist on disk.", [
+                    'id' => $flashcard->id,
+                    'path' => $flashcard->document_path,
+                    'full_path' => \Storage::disk('public')->path($flashcard->document_path)
+                ]);
+                return response()->json(['error' => 'Source document file not found on server.'], 404);
             }
 
+            $filePath = \Storage::disk('public')->path($flashcard->document_path);
             $text = $generator->extractTextFromFile($filePath);
 
             if (empty(trim($text))) {
