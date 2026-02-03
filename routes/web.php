@@ -86,7 +86,7 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/flashcard/{flashcard}/card/{index}', [App\Http\Controllers\FlashcardController::class, 'updateCard'])->name('flashcard.card.update');
     Route::delete('/flashcard/{flashcard}/card/{index}', [App\Http\Controllers\FlashcardController::class, 'destroyCard'])->name('flashcard.card.destroy');
     Route::post('/flashcard/{flashcard}/clone', [App\Http\Controllers\FlashcardController::class, 'clone'])->name('flashcard.clone');
-    Route::get('/flashcard/{id}/summarize', [App\Http\Controllers\FlashcardController::class, 'summarize'])->name('flashcard.summarize');
+
 
     // Friendships
     Route::get('/friends', [App\Http\Controllers\FriendshipController::class, 'index'])->name('friends.index');
