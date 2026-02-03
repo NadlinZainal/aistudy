@@ -1,0 +1,4 @@
+USER TABLE DEBUG
+================
+
+Error: SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it (Connection: mysql, SQL: select count(*) as aggregate from `users`)
