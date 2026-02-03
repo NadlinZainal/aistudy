@@ -166,14 +166,14 @@ class FlashcardController extends Controller
     // Show the form to edit a flashcard
     public function edit($id)
     {
-        $flashcard = Flashcard::findOrFail($id);
+        $flashcard = Flashcard::where('user_id', auth()->id())->findOrFail($id);
         return view('Flashcard.edit', compact('flashcard'));
     }
 
     // Update a flashcard set (title/description/document)
     public function update(Request $request, $id)
     {
-        $flashcard = Flashcard::findOrFail($id);
+        $flashcard = Flashcard::where('user_id', auth()->id())->findOrFail($id);
         
         $data = $request->only(['title', 'description']);
         
@@ -195,7 +195,7 @@ class FlashcardController extends Controller
     // Delete a flashcard set
     public function destroy($id)
     {
-        $flashcard = Flashcard::findOrFail($id);
+        $flashcard = Flashcard::where('user_id', auth()->id())->findOrFail($id);
 
         // Optionally delete the document file
         if ($flashcard->document_path) {
@@ -483,23 +483,26 @@ class FlashcardController extends Controller
      */
     public function clone($id)
     {
-        $original = Flashcard::findOrFail($id);
-        
-        // Don't clone if the user already owns it (or maybe allow it? Let's allow it but check)
-        
-        $clone = $original->replicate();
-        $clone->user_id = auth()->id();
-        $clone->is_favorite = false;
-        $clone->save();
-        
-        if (request()->ajax()) {
-            return response()->json([
-                'success' => true, 
-                'message' => 'Flashcard deck added to your library!',
-                'redirect' => route('flashcard.index')
-            ]);
+        try {
+            $original = Flashcard::findOrFail($id);
+            
+            $clone = $original->replicate();
+            $clone->user_id = auth()->id();
+            $clone->is_favorite = false;
+            $clone->save();
+            
+            if (request()->ajax()) {
+                return response()->json([
+                    'success' => true, 
+                    'message' => 'Flashcard deck added to your library!',
+                    'redirect' => route('flashcard.index')
+                ]);
+            }
+            
+            return redirect()->route('flashcard.index')->with('success', 'Flashcard deck added to your library!');
+        } catch (\Throwable $e) {
+            \Log::error('Clone failed: ' . $e->getMessage());
+            return back()->with('error', 'Failed to add deck: ' . $e->getMessage());
         }
-        
-        return redirect()->route('flashcard.index')->with('success', 'Flashcard deck added to your library!');
     }
 }

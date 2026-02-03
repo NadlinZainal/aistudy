@@ -18,9 +18,18 @@
             </p>
         </div>
         <div class="d-flex align-items-center mt-3 mt-md-0">
+            @if($flashcard->user_id === auth()->id())
             <a href="{{ route('flashcard.edit', $flashcard->id) }}" class="btn btn-soft-info px-4 py-2 rounded-pill mr-2">
                 <i class="fas fa-edit mr-2"></i> Edit Deck Info
             </a>
+            @else
+            <form action="{{ route('flashcard.clone', $flashcard->id) }}" method="POST" class="d-inline">
+                @csrf
+                <button type="submit" class="btn btn-soft-success px-4 py-2 rounded-pill mr-2">
+                    <i class="fas fa-plus-circle mr-2"></i> Add to Library
+                </button>
+            </form>
+            @endif
             @if($flashcard->status === 'completed' && !empty($flashcard->cards))
                 <a href="{{ route('flashcard.study', $flashcard->id) }}" class="btn btn-primary shadow-lg px-4 py-2 rounded-pill">
                     <i class="fas fa-play mr-2"></i> Start Studying
