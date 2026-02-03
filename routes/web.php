@@ -114,6 +114,17 @@ Route::get('/debug-db-paths', function() {
     return \App\Models\Flashcard::whereNotNull('document_path')->latest()->take(10)->get(['id', 'title', 'document_path'])->toArray();
 });
 
+Route::get('/emergency-clear-user', function(\Illuminate\Http\Request $request) {
+    $email = $request->query('email');
+    if (!$email) return "Please provide an email: /emergency-clear-user?email=your@email.com";
+    
+    $user = \App\Models\User::where('email', $email)->first();
+    if (!$user) return "User not found with email: " . $email;
+    
+    $user->delete();
+    return "User account for " . $email . " has been DELETED. You can now register again!";
+});
+
 // Health Check Route
 Route::get('/health-check', function () {
     return "Web server is RUNNING! ✅";
