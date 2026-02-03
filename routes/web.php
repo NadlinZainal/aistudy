@@ -4,12 +4,21 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/health-check', function () {
-    return "Web server is RUNNING! ✅ Version: 1.0.2 (" . date('H:i:s') . ")";
+    return "Web server is RUNNING! ✅ Version: 1.0.3 (" . date('H:i:s') . ")";
 });
 
 Route::get('/clear-route-cache', function() {
     \Illuminate\Support\Facades\Artisan::call('route:clear');
     return "Route cache cleared! ✅";
+});
+
+Route::get('/migrate-me', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate --force');
+        return "Migration successful! ✅ <a href='/'>Go to Dashboard</a>";
+    } catch (\Exception $e) {
+        return "Migration failed: ❌ " . $e->getMessage();
+    }
 });
 
 Route::get('/emergency-clear-user', function(\Illuminate\Http\Request $request) {
