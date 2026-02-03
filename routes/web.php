@@ -3,6 +3,26 @@
 use Illuminate\Support\Facades\Route;
 
 
+Route::get('/health-check', function () {
+    return "Web server is RUNNING! ✅ Version: " . date('Y-m-d H:i:s');
+});
+
+Route::get('/clear-route-cache', function() {
+    \Illuminate\Support\Facades\Artisan::call('route:clear');
+    return "Route cache cleared! ✅";
+});
+
+Route::get('/emergency-clear-user', function(\Illuminate\Http\Request $request) {
+    $email = $request->query('email');
+    if (!$email) return "Please provide an email: /emergency-clear-user?email=your@email.com";
+    
+    $user = \App\Models\User::where('email', $email)->first();
+    if (!$user) return "User not found with email: " . $email;
+    
+    $user->delete();
+    return "User account for " . $email . " has been DELETED. You can now register again!";
+});
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -109,36 +129,6 @@ Route::post('/logout', function () {
     return redirect('/');
 })->name('logout');
 
-
-Route::get('/debug-db-paths', function() {
-    return \App\Models\Flashcard::whereNotNull('document_path')->latest()->take(10)->get(['id', 'title', 'document_path'])->toArray();
-});
-
-Route::get('/emergency-clear-user', function(\Illuminate\Http\Request $request) {
-    $email = $request->query('email');
-    if (!$email) return "Please provide an email: /emergency-clear-user?email=your@email.com";
-    
-    $user = \App\Models\User::where('email', $email)->first();
-    if (!$user) return "User not found with email: " . $email;
-    
-    $user->delete();
-    return "User account for " . $email . " has been DELETED. You can now register again!";
-});
-
-// Health Check Route
-Route::get('/health-check', function () {
-    return "Web server is RUNNING! ✅";
-});
-
-// Temporary Migration Route for Setup
-Route::get('/migrate-me', function () {
-    try {
-        \Illuminate\Support\Facades\Artisan::call('migrate --force');
-        return "Migration successful! <a href='/'>Go to Dashboard</a>";
-    } catch (\Exception $e) {
-        return "Migration failed: " . $e->getMessage();
-    }
-});
 
 // Debug Route (Remove this later!)
 Route::get('/check-config', function() {
