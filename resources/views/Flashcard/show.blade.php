@@ -18,22 +18,10 @@
             </p>
         </div>
         <div class="d-flex align-items-center mt-3 mt-md-0">
-            @if($flashcard->user_id === auth()->id())
             <a href="{{ route('flashcard.edit', $flashcard->id) }}" class="btn btn-soft-info px-4 py-2 rounded-pill mr-2">
                 <i class="fas fa-edit mr-2"></i> Edit Deck Info
             </a>
-            @else
-            <form action="{{ route('flashcard.clone', $flashcard->id) }}" method="POST" class="d-inline">
-                @csrf
-                <button type="submit" class="btn btn-soft-success px-4 py-2 rounded-pill mr-2">
-                    <i class="fas fa-plus-circle mr-2"></i> Add to Library
-                </button>
-            </form>
-            @endif
             @if($flashcard->status === 'completed' && !empty($flashcard->cards))
-                <button class="btn btn-soft-warning px-4 py-2 rounded-pill mr-2 btn-summarize" data-id="{{ $flashcard->id }}">
-                    <i class="fas fa-bolt mr-2"></i> Summary
-                </button>
                 <a href="{{ route('flashcard.study', $flashcard->id) }}" class="btn btn-primary shadow-lg px-4 py-2 rounded-pill">
                     <i class="fas fa-play mr-2"></i> Start Studying
                 </a>
@@ -186,30 +174,6 @@
     </div>
 </div>
 
-<!-- Summary Modal -->
-<div class="modal fade" id="summaryModal" tabindex="-1" role="dialog" aria-labelledby="summaryModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content glass border-0" style="border-radius: 24px;">
-      <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title font-weight-bold" id="summaryModalLabel">
-            <i class="fas fa-bolt text-warning mr-2"></i> Smart Summary
-        </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body p-4">
-        <div id="summaryContent" class="text-muted" style="line-height: 1.6; white-space: pre-wrap;">
-            Generating summary... Please wait.
-        </div>
-      </div>
-      <div class="modal-footer border-0">
-        <button type="button" class="btn btn-light rounded-pill px-4" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <style>
     .glass {
         background: rgba(255, 255, 255, 0.7) !important;
@@ -225,8 +189,6 @@
     .bg-soft-danger { background-color: rgba(220, 38, 38, 0.1) !important; }
     .btn-soft-info { background-color: rgba(8, 145, 178, 0.1); color: #0891b2; border: none; }
     .btn-soft-info:hover { background-color: rgba(8, 145, 178, 0.2); }
-    .btn-soft-warning { background-color: rgba(245, 158, 11, 0.1); color: #d97706; border: none; }
-    .btn-soft-warning:hover { background-color: rgba(245, 158, 11, 0.2); }
     
     .stats-icon {
         width: 48px;
@@ -419,38 +381,6 @@ $(function() {
                         Swal.fire('Error', 'Failed to delete card.', 'error');
                     }
                 });
-            }
-        });
-    });
-
-    // Summarize Action
-    $('.btn-summarize').on('click', function(e) {
-        e.preventDefault();
-        const id = $(this).data('id');
-        const modal = $('#summaryModal');
-        const content = $('#summaryContent');
-        
-        content.html('<div class="text-center p-5"><i class="fas fa-spinner fa-spin fa-2x text-primary mb-3"></i><p>AI is analyzing your document and generating a summary...</p></div>');
-        modal.modal('show');
-        
-        $.ajax({
-            url: `/flashcard/${id}/summarize`,
-            method: 'GET',
-            success: function(response) {
-                if (response.summary) {
-                    let html = response.summary
-                        .replace(/^### (.*)$/gm, '<h4 class="mt-4 font-weight-bold">$1</h4>')
-                        .replace(/^## (.*)$/gm, '<h3 class="mt-4 font-weight-bold">$1</h3>')
-                        .replace(/^\- (.*)$/gm, '<li class="ml-3">$1</li>')
-                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                    
-                    content.html(html);
-                } else {
-                    content.html('<p class="text-danger">Failed to generate summary.</p>');
-                }
-            },
-            error: function(xhr) {
-                content.html('<p class="text-danger">Error: ' + (xhr.responseJSON?.error || 'Something went wrong.') + '</p>');
             }
         });
     });
